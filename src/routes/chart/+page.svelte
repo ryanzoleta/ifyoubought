@@ -78,7 +78,7 @@
             bind:value={boughtStr} />
           <p>
             shares of {data.symbol} at
-            <span class="font-bold text-rose-500">{formatCurrency(boughtAt)}</span>
+            <span class="font-bold">{formatCurrency(boughtAt)}</span>
           </p>
         </div>
 
