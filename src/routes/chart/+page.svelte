@@ -110,10 +110,10 @@
       <div class="flex flex-col items-end">
         {#if diff > 0}
           <h3 class="text-3xl font-extrabold">${latestPrice}</h3>
-          <h3 class="text-green-500">(+{diff}) +{diffPct.toFixed(2)}%</h3>
+          <h3 class="text-green-500">(+{diff.toFixed(2)}) +{diffPct.toFixed(2)}%</h3>
         {:else}
           <h3 class="text-3xl font-extrabold">${latestPrice}</h3>
-          <h3 class="text-red-500">({diff}) {diffPct.toFixed(2)}%</h3>
+          <h3 class="text-red-500">({diff.toFixed(2)}) {diffPct.toFixed(2)}%</h3>
         {/if}
       </div>
     </div>
