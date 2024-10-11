@@ -8,6 +8,7 @@
   import { browser } from '$app/environment';
   import Chart from 'chart.js/auto';
   import { verticalLinePlugin } from '$lib/chart-utils.js';
+  import dayjs from 'dayjs';
 
   export let data;
 
@@ -43,8 +44,8 @@
         datasets: [
           {
             label: '',
-            backgroundColor: 'hsla(142, 71%, 45%, 0.2)',
-            borderColor: 'hsl(142, 71%, 45%)',
+            backgroundColor: diff > 0 ? 'hsla(142, 71%, 45%, 0.2)' : 'hsl(350, 89%, 60%, 0.2)',
+            borderColor: diff > 0 ? 'hsl(142, 71%, 45%)' : 'hsl(350, 89%, 60%)',
             fill: {
               target: 'origin'
             },
@@ -56,6 +57,43 @@
         plugins: {
           legend: {
             display: false
+          },
+          tooltip: {
+            enabled: true,
+            backgroundColor: 'hsl(24, 10%, 10%)',
+            titleColor: '#fff',
+            titleFont: {
+              family: 'Arial',
+              size: 14,
+              weight: 'bold'
+            },
+            bodyColor: '#78716c',
+            bodyFont: {
+              family: 'Nunito',
+              size: 14
+            },
+            cornerRadius: 4,
+            // padding: 10,
+            boxWidth: 0,
+            boxHeight: 0,
+            // Adjust padding
+            padding: {
+              top: 10,
+              right: 12,
+              bottom: 8,
+              left: 12
+            },
+            callbacks: {
+              title: function (tooltipItems) {
+                return '';
+              },
+              label: function (tooltipItem) {
+                return `${tooltipItem.formattedValue}   ${dayjs(tooltipItem.label).format('MMM D, YYYY')}`;
+              },
+              afterLabel: function (tooltipItem) {
+                return '';
+              }
+            }
           }
         },
         elements: {
@@ -75,9 +113,11 @@
             },
             ticks: {
               callback: function (val, index) {
-                // Show every 2nd label (adjust the number to change the interval)
-                return index % 2 === 0 ? this.getLabelForValue(val as number) : '';
-              }
+                const date = dayjs(this.getLabels()[index]);
+                return index % 3 === 0 ? date.format('MMM D') : '';
+              },
+              maxRotation: 0,
+              minRotation: 0
             }
           },
           y: {
@@ -95,7 +135,7 @@
   });
 </script>
 
-<div class="w-11/12 sm:w-8/12 md:w-6/12 lg:w-6/12 xl:w-6/12 2xl:w-4/12">
+<div class="w-11/12 sm:w-10/12 md:w-8/12 lg:w-8/12 xl:w-8/12 2xl:w-6/12">
   <div class="flex flex-col gap-2 self-center p-5 font-nunito">
     <div class="flex flex-row gap-3">
       <SearchComponent placeholder="search for another stock..." autofocus={false} />
@@ -114,7 +154,7 @@
           <h3 class="text-green-500">(+{diff.toFixed(2)}) +{diffPct.toFixed(2)}%</h3>
         {:else}
           <h3 class="text-3xl font-extrabold">${latestPrice}</h3>
-          <h3 class="text-red-500">({diff.toFixed(2)}) {diffPct.toFixed(2)}%</h3>
+          <h3 class="text-rose-500">({diff.toFixed(2)}) {diffPct.toFixed(2)}%</h3>
         {/if}
       </div>
     </div>
