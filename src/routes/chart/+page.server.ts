@@ -3,6 +3,14 @@ import { error, redirect, type LoadEvent } from '@sveltejs/kit';
 import Redis from 'ioredis';
 import { env } from '$env/dynamic/private';
 
+type Stock = {
+  symbol: string;
+  prices: {
+    date: string;
+    close: number;
+  }[];
+};
+
 export async function load(event: LoadEvent) {
   const symbol = event.url.searchParams.get('symbol');
 
@@ -22,6 +30,11 @@ export async function load(event: LoadEvent) {
     if (response.ok) {
       const json = await response.json();
 
+      if (!json.data) {
+        console.log('No data');
+        error(501, 'No data');
+      }
+
       const flattened = json.data.map((d: any) => ({
         date: d.date.substring(0, 10),
         close: d.close
@@ -34,7 +47,7 @@ export async function load(event: LoadEvent) {
       return {
         prices: flattened,
         symbol: symbol
-      };
+      } as Stock;
     } else {
       error(501, response.statusText);
     }
@@ -42,6 +55,6 @@ export async function load(event: LoadEvent) {
     return {
       prices: JSON.parse(stock),
       symbol: symbol
-    };
+    } as Stock;
   }
 }

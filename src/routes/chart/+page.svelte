@@ -13,9 +13,10 @@
   let ticker = tickers.find((t) => t.symbol.toLowerCase() === data.symbol.toLowerCase());
 
   // price list is in descending date order
-  let latestPrice = data.prices[0].close;
-  let diff = data.prices[0].close - data.prices[data.prices.length - 1].close;
-  let diffPct = (diff / data.prices[data.prices.length - 1].close) * 100;
+  let latestPrice = data.prices.length > 0 ? data.prices[0].close : 0;
+  let oldestPrice = data.prices.length > 0 ? data.prices[data.prices.length - 1].close : 0;
+  let diff = latestPrice - oldestPrice;
+  let diffPct = (diff / oldestPrice) * 100;
 
   let ctx;
   let chartCanvas: HTMLCanvasElement;
@@ -27,7 +28,9 @@
       return;
     }
 
-    console.log(data);
+    console.log('data', data);
+
+    if (!data) return;
 
     let chartLabels = data.prices.map((p) => p.date).reverse();
     let chartValues = data.prices.map((p) => p.close).reverse();
@@ -72,7 +75,7 @@
             ticks: {
               callback: function (val, index) {
                 // Show every 2nd label (adjust the number to change the interval)
-                return index % 2 === 0 ? this.getLabelForValue(val) : '';
+                return index % 2 === 0 ? this.getLabelForValue(val as number) : '';
               }
             }
           },
@@ -92,7 +95,7 @@
 </script>
 
 <div class="w-11/12 sm:w-8/12 md:w-6/12 lg:w-6/12 xl:w-6/12 2xl:w-4/12">
-  <div class="font-nunito flex flex-col gap-2 self-center p-5">
+  <div class="flex flex-col gap-2 self-center p-5 font-nunito">
     <div class="flex flex-row gap-3">
       <SearchComponent placeholder="search for another stock..." autofocus={false} />
       <Button variant="ghost" size="icon" class="p-2 text-stone-600"><Search size={20} /></Button>
