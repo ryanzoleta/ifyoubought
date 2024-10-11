@@ -16,7 +16,7 @@ export async function load(event: LoadEvent) {
 
   if (!stock) {
     const response = await fetch(
-      `http://api.marketstack.com/v1/eod?access_key=${env.MARKETSTACK_API_KEY}&symbols=AAPL`
+      `http://api.marketstack.com/v1/eod?access_key=${env.MARKETSTACK_API_KEY}&symbols=${symbol.toUpperCase()}`
     );
 
     if (response.ok) {
