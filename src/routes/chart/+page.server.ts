@@ -32,14 +32,16 @@ export async function load(event: LoadEvent) {
       await redis.set(symbol, JSON.stringify(flattened));
 
       return {
-        prices: flattened
+        prices: flattened,
+        symbol: symbol
       };
     } else {
       error(501, response.statusText);
     }
   } else {
     return {
-      prices: JSON.parse(stock)
+      prices: JSON.parse(stock),
+      symbol: symbol
     };
   }
 }
