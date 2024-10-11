@@ -70,6 +70,7 @@
             // padding: 10,
             boxWidth: 0,
             boxHeight: 0,
+            displayColors: false,
             // Adjust padding
             padding: {
               top: 10,
