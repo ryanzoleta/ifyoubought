@@ -2,14 +2,7 @@ import redis from '$lib/redis';
 import { error, redirect, type LoadEvent } from '@sveltejs/kit';
 import Redis from 'ioredis';
 import { env } from '$env/dynamic/private';
-
-type Stock = {
-  symbol: string;
-  prices: {
-    date: string;
-    close: number;
-  }[];
-};
+import type { Stock } from '$lib/types';
 
 export async function load(event: LoadEvent) {
   const symbol = event.url.searchParams.get('symbol');

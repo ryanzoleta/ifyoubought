@@ -9,6 +9,7 @@
   import Chart from 'chart.js/auto';
   import { verticalLinePlugin } from '$lib/chart-utils.js';
   import dayjs from 'dayjs';
+  import ChartComponent from '$lib/components/chart.svelte';
 
   export let data;
 
@@ -20,119 +21,7 @@
   let diff = latestPrice - oldestPrice;
   let diffPct = (diff / oldestPrice) * 100;
 
-  let ctx;
-  let chartCanvas: HTMLCanvasElement;
-
-  onMount(() => {
-    ctx = chartCanvas.getContext('2d');
-
-    if (!ctx) {
-      return;
-    }
-
-    console.log('data', data);
-
-    if (!data) return;
-
-    let chartLabels = data.prices.map((p) => p.date).reverse();
-    let chartValues = data.prices.map((p) => p.close).reverse();
-
-    let chart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: chartLabels,
-        datasets: [
-          {
-            label: '',
-            backgroundColor: diff > 0 ? 'hsla(142, 71%, 45%, 0.2)' : 'hsl(350, 89%, 60%, 0.2)',
-            borderColor: diff > 0 ? 'hsl(142, 71%, 45%)' : 'hsl(350, 89%, 60%)',
-            fill: {
-              target: 'origin'
-            },
-            data: chartValues
-          }
-        ]
-      },
-      options: {
-        plugins: {
-          legend: {
-            display: false
-          },
-          tooltip: {
-            enabled: true,
-            backgroundColor: 'hsl(24, 10%, 10%)',
-            titleColor: '#fff',
-            titleFont: {
-              family: 'Arial',
-              size: 14,
-              weight: 'bold'
-            },
-            bodyColor: '#78716c',
-            bodyFont: {
-              family: 'Nunito',
-              size: 14
-            },
-            cornerRadius: 4,
-            // padding: 10,
-            boxWidth: 0,
-            boxHeight: 0,
-            // Adjust padding
-            padding: {
-              top: 10,
-              right: 12,
-              bottom: 8,
-              left: 12
-            },
-            callbacks: {
-              title: function (tooltipItems) {
-                return '';
-              },
-              label: function (tooltipItem) {
-                return `${tooltipItem.formattedValue}   ${dayjs(tooltipItem.label).format('MMM D, YYYY')}`;
-              },
-              afterLabel: function (tooltipItem) {
-                return '';
-              }
-            }
-          }
-        },
-        elements: {
-          point: {
-            radius: 0
-          }
-        },
-        interaction: {
-          intersect: false,
-          axis: 'x'
-        },
-        scales: {
-          x: {
-            display: true,
-            title: {
-              display: true
-            },
-            ticks: {
-              callback: function (val, index) {
-                const date = dayjs(this.getLabels()[index]);
-                return index % 3 === 0 ? date.format('MMM D') : '';
-              },
-              maxRotation: 0,
-              minRotation: 0
-            }
-          },
-          y: {
-            display: true,
-            title: {
-              text: 'Value'
-            }
-            // suggestedMin: -10,
-            // suggestedMax: 200
-          }
-        }
-      },
-      plugins: [verticalLinePlugin]
-    });
-  });
+  let period: '1w' | '1m' | '6m' | 'ytd' | '1y' | '3y' = '1w';
 </script>
 
 <div class="w-11/12 sm:w-10/12 md:w-8/12 lg:w-8/12 xl:w-8/12 2xl:w-6/12">
@@ -159,6 +48,17 @@
       </div>
     </div>
 
-    <canvas bind:this={chartCanvas} class="w-full place-self-center" />
+    <div class="flex flex-row justify-end gap-1">
+      {#each ['1w', '1m', '6m', 'ytd', '1y', '3y'] as p}
+        <Button
+          variant={period === p ? 'outline' : 'ghost'}
+          on:click={() => {
+            //@ts-ignore
+            period = p;
+          }}>{p}</Button>
+      {/each}
+    </div>
+
+    <ChartComponent {data} {diff} />
   </div>
 </div>
