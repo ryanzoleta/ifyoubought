@@ -69,32 +69,30 @@
 
     <ChartComponent {data} {diff} />
 
-    <div>
-      <div class="flex flex-col gap-10">
-        <div class="flex flex-row items-center gap-1 self-center text-xl">
-          <p>If you bought</p>
-          <input
-            class="w-24 border-b border-b-rose-500 bg-background text-center text-5xl"
-            bind:value={boughtStr} />
-          <p>
-            shares of {data.symbol} at
-            <span class="font-bold">{formatCurrency(boughtAt)}</span>
-          </p>
-        </div>
+    <div class="flex flex-col items-center gap-5">
+      <div class="flex flex-row flex-wrap justify-center gap-1 text-xl text-stone-500">
+        <p>If you bought</p>
 
-        <div class="flex flex-row justify-between text-lg">
-          <div class="flex flex-col items-start">
-            <p class="text-stone-500">your investment of</p>
-            <p class="text-5xl">{formatCurrency(bought * boughtAt)}</p>
-          </div>
+        <input
+          class="w-16 border-b border-b-rose-500 bg-background text-center text-3xl text-foreground outline-none"
+          bind:value={boughtStr} />
 
-          <div class="flex flex-col items-end">
-            <p class="text-stone-500">would have grown {(pctChg * 100).toFixed(2)}%</p>
-            <p class="text-5xl text-rose-500">
-              {formatCurrency(bought * boughtAt + bought * boughtAt * pctChg)}
-            </p>
-          </div>
-        </div>
+        <p>
+          {bought > 1 ? 'shares' : 'share'} of <span class="text-foreground">{data.symbol}</span>
+        </p>
+        <p>
+          at
+          <span class="text-foreground">{formatCurrency(boughtAt)} </span>
+          you would have {pctChg > 0 ? 'made' : 'lost'}
+        </p>
+      </div>
+
+      <div class="flex flex-col items-center">
+        <p class="text-5xl text-rose-500">
+          {formatCurrency(bought * boughtAt + bought * boughtAt * pctChg)}
+        </p>
+
+        <p class="text-rose-500">{pctChg > 0 ? '+' : '-'}{(pctChg * 100).toFixed(2)}%</p>
       </div>
     </div>
   </div>
