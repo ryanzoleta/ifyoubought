@@ -2,6 +2,13 @@
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { Search } from 'lucide-svelte';
+  import { onMount } from 'svelte';
+
+  export let data;
+
+  onMount(async () => {});
+
+  console.log(data);
 </script>
 
 <div class="w-11/12 sm:w-8/12 md:w-6/12 lg:w-6/12 xl:w-6/12 2xl:w-4/12">
