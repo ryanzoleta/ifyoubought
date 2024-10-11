@@ -7,6 +7,7 @@
   import SearchComponent from '$lib/components/search.svelte';
   import { browser } from '$app/environment';
   import Chart from 'chart.js/auto';
+  import { verticalLinePlugin } from '$lib/chart-utils.js';
 
   export let data;
 
@@ -63,8 +64,8 @@
           }
         },
         interaction: {
-          intersect: false
-          // axis: 'xy'
+          intersect: false,
+          axis: 'x'
         },
         scales: {
           x: {
@@ -82,14 +83,14 @@
           y: {
             display: true,
             title: {
-              display: true,
               text: 'Value'
             }
             // suggestedMin: -10,
             // suggestedMax: 200
           }
         }
-      }
+      },
+      plugins: [verticalLinePlugin]
     });
   });
 </script>
@@ -118,6 +119,6 @@
       </div>
     </div>
 
-    <canvas bind:this={chartCanvas} class="max-h-96 w-full place-self-center" />
+    <canvas bind:this={chartCanvas} class="w-full place-self-center" />
   </div>
 </div>
