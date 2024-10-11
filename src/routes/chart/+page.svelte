@@ -21,11 +21,11 @@
   let diff = latestPrice - oldestPrice;
   let diffPct = (diff / oldestPrice) * 100;
 
-  let period: '1w' | '1m' | '6m' | 'ytd' | '1y' | '3y' = '1w';
+  let period: '1w' | '1m' | '6m' | 'ytd' | '1y' | '3y' = '1m';
 </script>
 
 <div class="w-11/12 sm:w-10/12 md:w-8/12 lg:w-8/12 xl:w-8/12 2xl:w-6/12">
-  <div class="flex flex-col gap-2 self-center p-5 font-nunito">
+  <div class="flex flex-col gap-5 self-center p-5 font-nunito">
     <div class="flex flex-row gap-3">
       <SearchComponent placeholder="search for another stock..." autofocus={false} />
       <Button variant="ghost" size="icon" class="p-2 text-stone-600"><Search size={20} /></Button>
@@ -51,7 +51,8 @@
     <div class="flex flex-row justify-end gap-1">
       {#each ['1w', '1m', '6m', 'ytd', '1y', '3y'] as p}
         <Button
-          variant={period === p ? 'outline' : 'ghost'}
+          variant="ghost"
+          class={period === p ? 'bg-stone-800' : ''}
           on:click={() => {
             //@ts-ignore
             period = p;
