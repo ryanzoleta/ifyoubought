@@ -14,7 +14,11 @@ r = requests.get(
 )
 
 simplified = [
-    {"name": ticker["name"], "symbol": ticker["symbol"]} for ticker in r.json()["data"]
+    {
+        "name": ticker["name"],
+        "symbol": ticker["symbol"] if ticker["symbol"] != "FB" else "META",
+    }
+    for ticker in r.json()["data"]
 ]
 
 
