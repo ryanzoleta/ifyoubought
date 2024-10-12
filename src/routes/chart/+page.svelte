@@ -101,8 +101,9 @@
 
         <div class="flex flex-row gap-3">
           <p class={pctChg > 0 ? 'text-green-500' : 'text-rose-500'}>
-            {chg > 0 ? '+' : '-'}{formatCurrency(Math.abs(chg))}
+            ({chg > 0 ? '+' : '-'}{formatCurrency(Math.abs(chg))})
           </p>
+
           <p class={pctChg > 0 ? 'text-green-500' : 'text-rose-500'}>
             {pctChg > 0 ? '+' : '-'}{Math.abs(pctChg * 100).toFixed(2)}%
           </p>
