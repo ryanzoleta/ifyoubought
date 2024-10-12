@@ -24,8 +24,8 @@
 
   let period: '1w' | '1m' | '6m' | 'ytd' | '1y' | '3y' = '1m';
 
-  let boughtStr = '1000';
-  $: bought = parseInt(boughtStr);
+  let boughtStr = '1,000';
+  $: bought = boughtStr === '' ? 0 : parseInt(boughtStr.replace(',', ''));
   let boughtAt = oldestPrice;
   let soldAt = latestPrice;
   $: pctChg = (soldAt - boughtAt) / boughtAt;
@@ -83,8 +83,19 @@
           <p class="text-5xl">$</p>
           <input
             class="w-1/2 border-b border-b-stone-500 bg-background text-5xl text-foreground outline-none"
-            type="number"
-            bind:value={boughtStr} />
+            bind:value={boughtStr}
+            on:blur={() => {
+              if (boughtStr === '') {
+                boughtStr = '1';
+              } else {
+                boughtStr = formatCurrency(parseFloat(boughtStr))
+                  .replace('$', '')
+                  .replace('.00', '');
+              }
+            }}
+            on:focus={() => {
+              boughtStr = boughtStr.replace(',', '');
+            }} />
         </div>
 
         <p>
