@@ -31,6 +31,7 @@
 	"dependencies": {
 		"bits-ui": "^0.21.16",
 		"chart.js": "^4.4.4",
+		"chartjs-plugin-annotation": "^3.0.1",
 		"clsx": "^2.1.1",
 		"dayjs": "^1.11.13",
 		"ioredis": "^5.4.1",

@@ -26,9 +26,10 @@
 
   let boughtStr = '1000';
   $: bought = parseInt(boughtStr);
-  let boughtAt = 128.5;
-  let soldAt = 162.08;
-  let pctChg = (soldAt - boughtAt) / boughtAt;
+  let boughtAt = oldestPrice;
+  let soldAt = latestPrice;
+  $: pctChg = (soldAt - boughtAt) / boughtAt;
+  $: chg = bought * pctChg;
 </script>
 
 <div class="w-11/12 sm:w-10/12 md:w-8/12 lg:w-8/12 xl:w-8/12 2xl:w-6/12">
@@ -67,7 +68,12 @@
       {/each}
     </div>
 
-    <ChartComponent {data} {diff} />
+    <ChartComponent
+      {data}
+      {diff}
+      onBuyClick={(price) => {
+        boughtAt = price;
+      }} />
 
     <div class="flex flex-col gap-5">
       <div class="flex flex-1 flex-col justify-start gap-3 text-xl text-stone-500">
@@ -90,15 +96,19 @@
       <div class="flex flex-1 flex-col items-end gap-3 text-xl">
         <p class="text-stone-500">it would be worth</p>
         <p class="text-5xl">
-          {formatCurrency(bought * boughtAt + bought * boughtAt * pctChg)}
+          {formatCurrency(bought + chg)}
         </p>
 
         <div class="flex flex-row gap-3">
-          <p class="text-rose-500">
-            {pctChg > 0 ? '+' : '-'}{formatCurrency(bought * boughtAt * pctChg)}
+          <p class={pctChg > 0 ? 'text-green-500' : 'text-rose-500'}>
+            {chg > 0 ? '+' : '-'}{formatCurrency(Math.abs(chg))}
           </p>
-          <p class="text-rose-500">{pctChg > 0 ? '+' : '-'}{(pctChg * 100).toFixed(2)}%</p>
+          <p class={pctChg > 0 ? 'text-green-500' : 'text-rose-500'}>
+            {pctChg > 0 ? '+' : '-'}{Math.abs(pctChg * 100).toFixed(2)}%
+          </p>
         </div>
+
+        <p class="text-stone-500">today</p>
       </div>
     </div>
   </div>

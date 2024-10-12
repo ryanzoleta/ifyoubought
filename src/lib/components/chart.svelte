@@ -10,12 +10,17 @@
   import { verticalLinePlugin } from '$lib/chart-utils.js';
   import dayjs from 'dayjs';
   import type { Stock } from '$lib/types';
+  import ChartAnnotation from 'chartjs-plugin-annotation';
+
+  Chart.register(ChartAnnotation);
 
   export let data: Stock;
   export let diff: number;
+  export let onBuyClick: (price: number) => void;
 
   let ctx;
   let chartCanvas: HTMLCanvasElement;
+  let verticalLine = null;
 
   onMount(() => {
     ctx = chartCanvas.getContext('2d');
@@ -49,6 +54,12 @@
       },
       options: {
         plugins: {
+          annotation: {
+            annotations: {
+              vertical: []
+            }
+          },
+
           legend: {
             display: false
           },
@@ -86,7 +97,7 @@
                 return `${tooltipItem.formattedValue}   ${dayjs(tooltipItem.label).format('MMM D, YYYY')}`;
               },
               afterLabel: function (tooltipItem) {
-                return '';
+                return 'click to "buy here"';
               }
             }
           }
@@ -123,9 +134,46 @@
             // suggestedMin: -10,
             // suggestedMax: 200
           }
+        },
+        onClick: (event, elements, chart) => {
+          if (elements.length > 0) {
+            const firstElement = elements[0];
+            // Handle the click event here
+            onBuyClick(chart.data.datasets[0].data[firstElement.index] as number);
+
+            if (elements.length > 0) {
+              const firstElement = elements[0];
+              const dataIndex = firstElement.index;
+              const xValue = chart.data.labels[dataIndex];
+
+              // Remove existing vertical line if any
+              if (verticalLine) {
+                chart.options.plugins.annotation.annotations.line1 = null;
+              }
+
+              // Add new vertical line
+              verticalLine = {
+                type: 'line',
+                xMin: xValue,
+                xMax: xValue,
+                borderColor: '#0ea5e9',
+                borderWidth: 2
+              };
+
+              chart.options.plugins.annotation.annotations.line1 = verticalLine;
+            } else {
+              // Click outside data points, clear the vertical line
+              if (verticalLine) {
+                chart.options.plugins.annotation.annotations.line1 = null;
+                verticalLine = null;
+              }
+            }
+
+            chart.update();
+          }
         }
       },
-      plugins: [verticalLinePlugin]
+      plugins: [verticalLinePlugin, ChartAnnotation]
     });
   });
 </script>
