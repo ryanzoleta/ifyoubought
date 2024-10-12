@@ -20,7 +20,7 @@
     <div class="flex flex-row justify-center gap-1">
       <Button variant="outline" href="/chart?symbol=AAPL">AAPL</Button>
       <Button variant="outline" href="/chart?symbol=MSFT">MSFT</Button>
-      <Button variant="outline" href="/chart?symbol=META">METAA</Button>
+      <Button variant="outline" href="/chart?symbol=META">META</Button>
       <Button variant="outline" href="/chart?symbol=NVDA">NVDA</Button>
       <Button variant="outline" href="/chart?symbol=GOOGL">GOOGL</Button>
     </div>
