@@ -11,16 +11,51 @@
   import dayjs from 'dayjs';
   import type { Stock } from '$lib/types';
   import ChartAnnotation from 'chartjs-plugin-annotation';
+  import { formatCurrency } from '$lib/utils';
 
   Chart.register(ChartAnnotation);
 
   export let data: Stock;
   export let diff: number;
+  export let period: '1w' | '1m' | '6m' | 'ytd' | '1y' | '3y';
   export let onBuyClick: (price: number) => void;
 
   let ctx;
   let chartCanvas: HTMLCanvasElement;
   let verticalLine = null;
+
+  // const filteredPrices = data.prices.filter((p) => {
+  //   let date = dayjs(p.date);
+  //   let now = dayjs();
+  //   let diff = now.diff(date, 'day');
+
+  //   switch (period) {
+  //     case '1w':
+  //       return diff <= 7;
+  //     case '1m':
+  //       return diff <= 30;
+  //     case '6m':
+  //       return diff <= 180;
+  //     case 'ytd':
+  //       return date.isAfter(dayjs().startOf('year'));
+  //     case '1y':
+  //       return diff <= 365;
+  //     case '3y':
+  //       return diff <= 1095;
+  //   }
+  // });
+
+  const prices = [];
+
+  for (let i = 0; i < data.prices.length; i++) {
+    if (period === '3y') {
+      if (i % 7 === 0) {
+        prices.push(data.prices[i]);
+      }
+    } else {
+      prices.push(data.prices[i]);
+    }
+  }
 
   onMount(() => {
     ctx = chartCanvas.getContext('2d');
@@ -31,8 +66,8 @@
 
     if (!data) return;
 
-    let chartLabels = data.prices.map((p) => p.date).reverse();
-    let chartValues = data.prices.map((p) => p.close).reverse();
+    let chartLabels = prices.map((p) => p.date).reverse();
+    let chartValues = prices.map((p) => p.close).reverse();
 
     let chart = new Chart(ctx, {
       type: 'line',
@@ -92,7 +127,7 @@
                 return '';
               },
               label: function (tooltipItem) {
-                return `${tooltipItem.formattedValue}   ${dayjs(tooltipItem.label).format('MMM D, YYYY')}`;
+                return `${formatCurrency(parseFloat(tooltipItem.formattedValue))}   ${dayjs(tooltipItem.label).format('MMM D, YYYY')}`;
               },
               afterLabel: function (tooltipItem) {
                 return 'click to "buy here"';

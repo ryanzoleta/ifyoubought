@@ -16,18 +16,39 @@
 
   let ticker = tickers.find((t) => t.symbol.toLowerCase() === data.symbol.toLowerCase());
 
+  let period: '1w' | '1m' | '6m' | 'ytd' | '1y' | '3y' = '6m';
+
+  $: prices = data.prices.filter((p) => {
+    let date = dayjs(p.date);
+    let now = dayjs();
+    let diff = now.diff(date, 'day');
+
+    switch (period) {
+      case '1w':
+        return diff <= 7;
+      case '1m':
+        return diff <= 30;
+      case '6m':
+        return diff <= 180;
+      case 'ytd':
+        return date.isAfter(dayjs().startOf('year'));
+      case '1y':
+        return diff <= 365;
+      case '3y':
+        return diff <= 1095;
+    }
+  });
+
   // price list is in descending date order
-  let latestPrice = data.prices.length > 0 ? data.prices[0].close : 0;
-  let oldestPrice = data.prices.length > 0 ? data.prices[data.prices.length - 1].close : 0;
-  let diff = latestPrice - oldestPrice;
-  let diffPct = (diff / oldestPrice) * 100;
+  $: latestPrice = prices.length > 0 ? prices[0].close : 0;
+  $: oldestPrice = prices.length > 0 ? prices[prices.length - 1].close : 0;
+  $: diff = latestPrice - oldestPrice;
+  $: diffPct = (diff / oldestPrice) * 100;
 
-  let period: '1w' | '1m' | '6m' | 'ytd' | '1y' | '3y' = '1m';
-
-  let boughtStr = '1,000';
+  $: boughtStr = '1,000';
   $: bought = boughtStr === '' ? 0 : parseInt(boughtStr.replace(',', ''));
-  let boughtAt = oldestPrice;
-  let soldAt = latestPrice;
+  $: boughtAt = oldestPrice;
+  $: soldAt = latestPrice;
   $: pctChg = (soldAt - boughtAt) / boughtAt;
   $: chg = bought * pctChg;
 </script>
@@ -68,12 +89,15 @@
       {/each}
     </div>
 
-    <ChartComponent
-      {data}
-      {diff}
-      onBuyClick={(price) => {
-        boughtAt = price;
-      }} />
+    {#key period}
+      <ChartComponent
+        data={{ symbol: data.symbol, prices }}
+        {diff}
+        {period}
+        onBuyClick={(price) => {
+          boughtAt = price;
+        }} />
+    {/key}
 
     <div class="flex flex-col gap-5">
       <div class="flex flex-1 flex-col justify-start gap-3 text-xl text-stone-500">
