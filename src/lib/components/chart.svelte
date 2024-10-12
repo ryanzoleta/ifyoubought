@@ -29,8 +29,6 @@
       return;
     }
 
-    console.log('data', data);
-
     if (!data) return;
 
     let chartLabels = data.prices.map((p) => p.date).reverse();
