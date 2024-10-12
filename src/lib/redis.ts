@@ -1,9 +1,11 @@
 import Redis from 'ioredis';
+import { env } from '$env/dynamic/private';
 
 const redis = new Redis({
-  host: 'localhost', // or your Redis server host
-  port: 6379 // default Redis port
-  // Add any other options here
+  host: env.REDIS_HOST,
+  port: env.REDIS_POR,
+  username: env.REDIS_USERNAME,
+  password: env.REDIS_PASSWORD
 });
 
 export default redis;
