@@ -3,6 +3,7 @@
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { twMerge } from 'tailwind-merge';
+  import * as Popover from '$lib/components/ui/popover';
 
   export let placeholder;
   export let autofocus: boolean = false;
@@ -15,13 +16,15 @@
           ticker.name.toLowerCase().startsWith(search.toLowerCase())
       )
     : [];
+
+  $: showResults = true;
 </script>
 
 <div class="relative flex-1">
   <Input {placeholder} bind:value={search} />
 
   {#if filteredTickers.length > 0}
-    <div class="bg-background absolute left-0 top-10 w-full rounded-xl border p-2">
+    <div class="absolute left-0 top-10 w-full rounded-xl border bg-background p-2">
       {#each filteredTickers as t, index}
         <a
           href="/chart?symbol={t.symbol}"

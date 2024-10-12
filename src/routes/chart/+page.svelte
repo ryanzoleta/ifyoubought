@@ -82,7 +82,7 @@
         <div class="flex flex-row items-center gap-1">
           <p class="text-5xl">$</p>
           <input
-            class="w-1/2 border-b border-b-stone-500 bg-background text-5xl text-foreground outline-none"
+            class="w-10/12 border-b border-b-stone-500 bg-background text-5xl text-foreground outline-none md:w-1/2"
             bind:value={boughtStr}
             on:blur={() => {
               if (boughtStr === '') {
