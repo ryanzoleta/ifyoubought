@@ -28,10 +28,19 @@ export async function load(event: LoadEvent) {
         error(501, 'No data');
       }
 
-      const flattened = json.data.map((d: any) => ({
-        date: d.date.substring(0, 10),
-        close: d.close
-      }));
+      const flattened = [];
+      let splitFactor = 1;
+
+      for (const d of json.data) {
+        flattened.push({
+          date: d.date.substring(0, 10),
+          close: d.close / splitFactor
+        });
+
+        if (d.split_factor !== 1) {
+          splitFactor = d.split_factor;
+        }
+      }
 
       // TODO: pagination
 
