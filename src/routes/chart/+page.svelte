@@ -24,7 +24,7 @@
 
   let period: '1w' | '1m' | '6m' | 'ytd' | '1y' | '3y' = '1m';
 
-  let boughtStr = '1';
+  let boughtStr = '1000';
   $: bought = parseInt(boughtStr);
   let boughtAt = 128.5;
   let soldAt = 162.08;
@@ -69,30 +69,36 @@
 
     <ChartComponent {data} {diff} />
 
-    <div class="flex flex-col items-center gap-5">
-      <div class="flex flex-row flex-wrap justify-center gap-1 text-xl text-stone-500">
+    <div class="flex flex-col gap-5">
+      <div class="flex flex-1 flex-col justify-start gap-3 text-xl text-stone-500">
         <p>If you bought</p>
 
-        <input
-          class="w-16 border-b border-b-rose-500 bg-background text-center text-3xl text-foreground outline-none"
-          bind:value={boughtStr} />
+        <div class="flex flex-row items-center gap-1">
+          <p class="text-5xl">$</p>
+          <input
+            class="w-1/2 border-b border-b-stone-500 bg-background text-5xl text-foreground outline-none"
+            type="number"
+            bind:value={boughtStr} />
+        </div>
 
         <p>
-          {bought > 1 ? 'shares' : 'share'} of <span class="text-foreground">{data.symbol}</span>
-        </p>
-        <p>
-          at
-          <span class="text-foreground">{formatCurrency(boughtAt)} </span>
-          you would have {pctChg > 0 ? 'made' : 'lost'}
+          worth of <span class="text-foreground">{data.symbol}</span> stock at
+          <span class="text-foreground">{formatCurrency(boughtAt)}</span>
         </p>
       </div>
 
-      <div class="flex flex-col items-center">
-        <p class="text-5xl text-rose-500">
+      <div class="flex flex-1 flex-col items-end gap-3 text-xl">
+        <p class="text-stone-500">it would be worth</p>
+        <p class="text-5xl">
           {formatCurrency(bought * boughtAt + bought * boughtAt * pctChg)}
         </p>
 
-        <p class="text-rose-500">{pctChg > 0 ? '+' : '-'}{(pctChg * 100).toFixed(2)}%</p>
+        <div class="flex flex-row gap-3">
+          <p class="text-rose-500">
+            {pctChg > 0 ? '+' : '-'}{formatCurrency(bought * boughtAt * pctChg)}
+          </p>
+          <p class="text-rose-500">{pctChg > 0 ? '+' : '-'}{(pctChg * 100).toFixed(2)}%</p>
+        </div>
       </div>
     </div>
   </div>
